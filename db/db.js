@@ -1,5 +1,6 @@
 // db/db.js
 const { readdirSync, readFileSync, existsSync } = require('fs');
+<<<<<<< HEAD
 const { join } = require('path');
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
@@ -14,10 +15,27 @@ async function init() {
   // Chemin vers le dossier de migrations (db/migrations)
   const migrationsDir = join(__dirname, 'migrations');
 
+=======
+const { join }                   = require('path');
+const sqlite3                    = require('sqlite3');
+const { open }                   = require('sqlite');
+
+async function init() {
+  const db = await open({
+    filename: './dev.sqlite',
+    driver:   sqlite3.Database
+  });
+
+  // Chemin vers ton dossier de migrations, adapté si db.js est dans /db
+  const migrationsDir = join(__dirname, 'migrations');
+
+  // Si le dossier existe, on exécute les migrations
+>>>>>>> 97cb854 (Add files via upload)
   if (existsSync(migrationsDir)) {
     const files = readdirSync(migrationsDir)
       .filter(f => f.endsWith('.sql'))
       .sort();
+<<<<<<< HEAD
 
     for (const file of files) {
       const sql = readFileSync(join(migrationsDir, file), 'utf8');
@@ -39,6 +57,12 @@ async function init() {
       }
     }
 
+=======
+    for (const file of files) {
+      const sql = readFileSync(join(migrationsDir, file), 'utf8');
+      await db.exec(sql);
+    }
+>>>>>>> 97cb854 (Add files via upload)
     console.log(`✅ Applied ${files.length} migrations from ${migrationsDir}`);
   } else {
     console.warn(`⚠️  No migrations folder found at ${migrationsDir}, skipping migrations.`);

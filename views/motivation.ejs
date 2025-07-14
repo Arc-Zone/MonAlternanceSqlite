@@ -1,0 +1,87 @@
+<%- include('./includes/header.ejs') %>
+
+<div class="container py-5">
+  <!-- Hero Section -->
+  <section class="text-center mb-5">
+    <h1 class="display-5 fw-bold">Mes Lettres de Motivation</h1>
+    <p class="lead text-secondary">Visualisez, supprimez ou ajoutez de nouveaux documents PDF.</p>
+    <button class="btn btn-lg btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#uploadModal">
+      <i class="fas fa-upload me-2"></i>Uploader un PDF
+    </button>
+  </section>
+
+  <% if (lettreFiles.length === 0) { %>
+    <div class="alert alert-info text-center mb-5" role="alert">
+      <i class="fas fa-info-circle me-2"></i>Aucune lettre de motivation enregistrée.
+    </div>
+  <% } %>
+
+  <!-- Grille des lettres -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <% lettreFiles.forEach((file, idx) => { %>
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column justify-content-between">
+            <div class="d-flex align-items-center mb-3">
+              <i class="fas fa-file-pdf fs-1 text-danger me-3"></i>
+              <span class="fw-semibold text-truncate" style="max-width: 70%;"><%= file %></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <!-- Voir bouton -->
+              <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal<%= idx %>">
+                <i class="fas fa-eye me-1"></i>Voir
+              </button>
+              <!-- Supprimer bouton -->
+              <form action="/delete-lettre" method="post" class="m-0">
+                <input type="hidden" name="filename" value="<%= file %>">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal de prévisualisation -->
+        <div class="modal fade" id="viewModal<%= idx %>" tabindex="-1" aria-labelledby="viewLabel<%= idx %>" aria-hidden="true">
+          <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="viewLabel<%= idx %>"><i class="fas fa-file-pdf me-2"></i><%= file %></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+              </div>
+              <div class="modal-body" style="height:80vh;">
+                <iframe src="/docs/motivation_letter/<%= file %>" class="w-100 h-100" frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<!-- Modal d'upload -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel"><i class="fas fa-upload me-2"></i>Uploader une lettre</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/upload-lettre" method="post" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="letterFiles" class="form-label">Sélectionnez un fichier PDF</label>
+            <input type="file" name="letterFiles" id="letterFiles" class="form-control" accept="application/pdf" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Uploader</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('./includes/footer.ejs') %>

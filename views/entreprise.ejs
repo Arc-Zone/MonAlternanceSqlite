@@ -1,0 +1,81 @@
+<%- include('./includes/header.ejs') %>
+
+<div class="container my-4">
+  <!-- Titre et bouton Ajouter -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Liste d'entreprises contactées / à contacter</h2>
+    <% if (entreprises.length !== 0) { %>
+      <button id="addEntreprise" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entrepriseModal">
+        Ajouter Une Entreprise
+      </button>
+    <% } %>
+  </div>
+
+  <!-- Barre de recherche -->
+  <form class="d-flex mb-4">
+    <label for="thermeSearch" class="me-2">Rechercher</label>
+    <input type="text" id="thermeSearch" class="form-control" placeholder="Rechercher une entreprise..." disabled>
+  </form>
+
+  <% if (entreprises.length === 0) { %>
+    <div class="text-center p-5 border rounded">
+      <p class="mb-3">Aucune entreprise à contacter actuellement.</p>
+      <button id="addEntreprise" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entrepriseModal">
+        Ajouter Une Entreprise
+      </button>
+    </div>
+  <% } else { %>
+    <div class="row gy-4">
+      <% entreprises.forEach(entreprise => { %>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title mb-2"><%= entreprise.entreprise_name %></h5>
+              <p class="card-text mb-1"><small class="text-muted">Numéro : 0<%= entreprise.entreprise_phone %></small></p>
+              <p class="card-text mb-3"><small class="text-muted">Email : <%= entreprise.entreprise_mail %></small></p>
+              <div class="mt-auto text-end">
+                <form action="/deleteEntreprise/<%= entreprise.id %>" method="post">
+                  <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Modal d'ajout d'entreprise -->
+<div class="modal fade" id="entrepriseModal" tabindex="-1" aria-labelledby="entrepriseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="entrepriseModalLabel">Ajout d'entreprise</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/postEntreprise" method="post">
+          <div class="mb-3">
+            <label for="NameEntreprise" class="form-label">Nom de l'Entreprise</label>
+            <input type="text" name="NameEntreprise" id="NameEntreprise" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="emailEntreprise" class="form-label">Email de l'entreprise</label>
+            <input type="email" name="emailEntreprise" id="emailEntreprise" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="telEntreprise" class="form-label">Téléphone de l'entreprise</label>
+            <input type="text" name="telEntreprise" id="telEntreprise" class="form-control" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-success">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../script/research.js"></script>
+<%- include('./includes/footer.ejs') %>

@@ -1,0 +1,34 @@
+<%- include('./includes/header.ejs') %>
+
+<div class="container my-4">
+  <!-- Titre Todo -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Todo</h2>
+  </div>
+
+  <!-- Formulaire d'ajout de todo -->
+  <form action="/postTodo" method="post" class="input-group mb-4">
+    <input type="text" name="todo" class="form-control" placeholder="Ajouter une todo à la liste" required>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+  </form>
+
+  <!-- Liste des todos -->
+  <ul class="list-group">
+    <% todos.forEach(todo => { %>
+      <li data-id="<%= todo.id %>" class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="todo-<%= todo.id %>">
+          <label class="form-check-label ms-2" for="todo-<%= todo.id %>">
+            <%= todo.todo_name %>
+          </label>
+        </div>
+        <form action="/deleteToDo/<%= todo.id %>" method="post" class="m-0">
+          <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<script src="../script/todo.js"></script>
+<%- include('./includes/footer.ejs') %>

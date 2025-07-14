@@ -1,0 +1,49 @@
+<%- include('./includes/header.ejs') %>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8">
+      <!-- Card détails du poste -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h3 class="mb-0 text-uppercase"><%= posts.name_emploie %></h3>
+          <a href="/alternance" class="btn btn-outline-light btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Retour
+          </a>
+        </div>
+        <div class="card-body">
+          <p class="mb-3">
+            <strong>Entreprise :</strong>
+            <span class="text-muted"><%= posts.entreprise %></span>
+          </p>
+          <p class="mb-3">
+            <strong>Description :</strong>
+            <span><%= posts.description_job %></span>
+          </p>
+          <p class="mb-4">
+            <strong>Lien du poste :</strong>
+            <a href="<%= posts.link_job %>" target="_blank" class="text-decoration-none">
+              <i class="fas fa-external-link-alt me-1"></i>Voir l'offre
+            </a>
+          </p>
+          <div class="d-flex gap-2">
+            <form action="/updateStatus/waiting/<%= posts.id %>" method="post">
+              <input type="hidden" name="status" value="en_attente">
+              <button type="submit" class="btn btn-warning">Marquer en attente</button>
+            </form>
+            <form action="/updateStatus/<%= posts.id %>" method="post">
+              <input type="hidden" name="status" value="refusee">
+              <button type="submit" class="btn btn-danger">Marquer refusée</button>
+            </form>
+            <form action="/updateStatus/<%= posts.id %>" method="post">
+              <input type="hidden" name="status" value="acceptee">
+              <button type="submit" class="btn btn-success">Marquer acceptée</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('./includes/footer.ejs') %>

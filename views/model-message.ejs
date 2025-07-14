@@ -1,0 +1,77 @@
+<%- include('./includes/header.ejs') %>
+
+<div class="container my-4">
+  <!-- Titre et bouton Ajouter -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Modèle de message</h2>
+    <% if (msgs.length !== 0) { %>
+      <button id="addMsg" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#msgModal">
+        Ajouter un modèle de message
+      </button>
+    <% } %>
+  </div>
+
+  <!-- Contenu principal -->
+  <% if (msgs.length === 0) { %>
+    <div class="text-center p-5 border rounded">
+      <p class="mb-3">Aucun modèle de message n'est actuellement enregistré.</p>
+      <button id="addMsg" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#msgModal">
+        Ajouter un message
+      </button>
+    </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% msgs.forEach((msg, index) => { %>
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><%= msg.title %></h5>
+              <div id="text-to-copy-<%= index %>" class="card-text mb-3">
+                <p><%= msg.message_core %></p>
+              </div>
+              <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-secondary btn-sm copy-button" data-target="text-to-copy-<%= index %>">
+                  Copier
+                </button>
+                <form action="/deleteMessage/<%= msg.id %>" method="post" class="m-0">
+                  <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Modal d'ajout de message -->
+<div class="modal fade" id="msgModal" tabindex="-1" aria-labelledby="msgModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="msgModalLabel">Ajout d'un message</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/message" method="post">
+          <div class="mb-3">
+            <label for="titleMessage" class="form-label">Titre du message</label>
+            <input type="text" name="titleMessage" id="titleMessage" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="messageContent" class="form-label">Message</label>
+            <textarea name="message" id="messageContent" class="form-control" rows="4" required></textarea>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-success">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../script/research.js"></script>
+<script src="../script/menu.js"></script>
+<%- include('./includes/footer.ejs') %>

@@ -1,0 +1,1 @@
+ALTER TABLE todos RENAME to todo

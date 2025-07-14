@@ -1,0 +1,127 @@
+<%- include('./includes/header.ejs') %>
+
+<div class="container mt-4">
+  <!-- En-tête  de kk-->
+  <div class="row mb-3 align-items-center">
+    <div class="col">
+      <h2 class="mb-0">Liste de Candidature</h2>
+    </div>
+    <div class="col-auto">
+      <% if (Object.keys(groupedAlternances).length !== 0) { %>
+        <button id="addCandidate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal">
+          Ajouter une Candidature
+        </button>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Barre de recherche -->
+  <div class="row mb-4">
+    <div class="col-12 col-md-6">
+      <form class="d-flex">
+        <label for="thermeSearch" class="me-2">Rechercher</label>
+        <input type="text" id="thermeSearch" class="form-control" placeholder="Rechercher une candidature..." disabled>
+      </form>
+    </div>
+  </div>
+
+  <% if (Object.keys(groupedAlternances).length === 0) { %>
+    <div class="text-center p-5 border rounded">
+      <p class="mb-3">Aucune candidature.</p>
+      <button id="addCandidate" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal">
+        Ajouter Une Candidature
+      </button>
+    </div>
+  <% } else { %>
+    <% Object.entries(groupedAlternances).forEach(([dateLabel, items]) => { %>
+      <h3 class="mt-5 mb-3 text-secondary text-capitalize"><%= dateLabel %></h3>
+      <div class="row gy-4">
+        <% items.forEach(item => { %>
+          <div data-id="<%= item.id %>" class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">
+                  <a href="/post/<%= item.id %>" class="text-decoration-none">
+                    <%= item.name_emploie %>
+                  </a>
+                </h5>
+                <p class="card-text mb-1">
+                  <small class="text-muted">Entreprise : <%= item.entreprise.toUpperCase() %></small>
+                </p>
+                <p class="card-text mb-1">
+                  <small class="text-muted">Plateforme : <%= item.plateform_job %></small>
+                </p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                  <div class="d-flex gap-2">
+                    <form action="/updateStatus/waiting/<%= item.id %>" method="post">
+                      <button type="submit" class="btn btn-sm btn-warning">En attente</button>
+                    </form>
+                    <form action="/updateStatus/refuse/<%= item.id %>" method="post">
+                      <button type="submit" class="btn btn-sm btn-danger">Refusée</button>
+                    </form>
+                    <form action="/updateStatus/accepte/<%= item.id %>" method="post">
+                      <button type="submit" class="btn btn-sm btn-success">Acceptée</button>
+                    </form>
+                  </div>
+                  <form action="/deleteAlternance/<%= item.id %>" method="post">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Supprimer</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% }); %>
+  <% } %>
+</div>
+
+<!-- Modal d'ajout de candidature -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Ajout d'une candidature</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/addPost" method="post">
+          <div class="mb-3">
+            <label for="name_emploie" class="form-label">Intitulé du Poste</label>
+            <input type="text" name="name_emploie" id="name_emploie" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="entreprise" class="form-label">Nom de l'Entreprise</label>
+            <input type="text" name="entreprise" id="entreprise" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="type_emploie" class="form-label">Type de poste</label>
+            <input type="text" name="type_emploie" id="type_emploie" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description du poste</label>
+            <input type="text" name="description" id="description" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="city_job" class="form-label">Lieu du Poste</label>
+            <input type="text" name="city_job" id="city_job" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="plateform_job" class="form-label">Plateforme d'emploi</label>
+            <input type="text" name="plateform_job" id="plateform_job" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="link_job" class="form-label">Lien vers le poste</label>
+            <input type="text" name="link_job" id="link_job" class="form-control" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-success">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../script/research.js"></script>
+<%- include('./includes/footer.ejs') %>

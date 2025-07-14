@@ -1,0 +1,63 @@
+<%- include('./includes/header.ejs') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h3 class="mb-0">Planifier un rendez-vous</h3>
+        </div>
+        <div class="card-body">
+          <p>Pour l'offre de poste </em>, choisissez une date :</p>
+          <form action="/scheduleAppointment/" method="post">
+            <div id="calendar"></div>
+            <input type="hidden" name="appointmentDate" id="appointmentDate">
+            <div class="text-end mt-4">
+              <button type="submit" class="btn btn-primary">Enregistrer RDV</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FullCalendar CSS & JS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<!-- Locale FR pour FullCalendar -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/fr.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Sélectionne ton conteneur
+    var calendarEl = document.getElementById('calendar');
+
+    // Instancie le calendrier en français
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      locale: 'fr',            // <-- ici on passe le français
+      initialView: 'dayGridMonth',
+      selectable: true,
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      buttonText: {
+        today:    "Aujourd'hui",
+        month:    'Mois',
+        week:     'Semaine',
+        day:      'Jour',
+        list:     'Liste'
+      },
+      select: function(info) {
+        // Exemple : on récupère la date au format ISO
+        document.getElementById('appointmentDate').value = info.startStr + 'T09:00';
+      }
+    });
+
+    // Affiche le calendrier
+    calendar.render();
+  });
+</script>
+<%- include('./includes/footer.ejs') %>

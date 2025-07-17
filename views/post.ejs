@@ -31,11 +31,11 @@
               <input type="hidden" name="status" value="en_attente">
               <button type="submit" class="btn btn-warning">Marquer en attente</button>
             </form>
-            <form action="/updateStatus/<%= posts.id %>" method="post">
+            <form action="/updateStatus/refuse/<%= posts.id %>" method="post">
               <input type="hidden" name="status" value="refusee">
               <button type="submit" class="btn btn-danger">Marquer refusée</button>
             </form>
-            <form action="/updateStatus/<%= posts.id %>" method="post">
+            <form action="/updateStatus/accepte/<%= posts.id %>" method="post">
               <input type="hidden" name="status" value="acceptee">
               <button type="submit" class="btn btn-success">Marquer acceptée</button>
             </form>

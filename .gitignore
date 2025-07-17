@@ -37,3 +37,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.swp
+# Ignore les dépendances
+node_modules/
+
+# Ignore tout binaire trop gros
+*.app
+*.framework

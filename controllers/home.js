@@ -183,8 +183,31 @@ async function refused (req , res) {
 }
 
 async function calendar(req , res) {
+     let [rows , fields] = await db.query(`SELECT * FROM appointments `)
     res.render('calendar.ejs')
 }
+async function addscheduleAppointment(req, res) {
+  // 1) On récupère les données du formulaire
+  const { context, appointment_date } = req.body;
+
+  try {
+    // 2) On exécute l'INSERT en passant bien les deux valeurs
+    await db.query(
+      `INSERT INTO appointments (context, appointment_date)
+       VALUES (?, ?)`,
+      [context, appointment_date]
+    );
+
+    // 3) On peut ensuite recharger la vue du calendrier, ou rediriger
+    // Par exemple, si tu as un route GET /calendar qui affiche tout :
+    return res.redirect('/calendar');
+  } catch (err) {
+    console.error('❌ Erreur addscheduleAppointment:', err);
+    return res.status(500).send('Erreur interne lors de la planification du RDV.');
+  }
+}
+
+module.exports.addscheduleAppointment = addscheduleAppointment
 module.exports.calendar = calendar
 module.exports.refused = refused
 module.exports.accepted = accepted

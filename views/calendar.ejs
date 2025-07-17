@@ -8,56 +8,149 @@
           <h3 class="mb-0">Planifier un rendez-vous</h3>
         </div>
         <div class="card-body">
-          <p>Pour l'offre de poste </em>, choisissez une date :</p>
-          <form action="/scheduleAppointment/" method="post">
-            <div id="calendar"></div>
-            <input type="hidden" name="appointmentDate" id="appointmentDate">
-            <div class="text-end mt-4">
-              <button type="submit" class="btn btn-primary">Enregistrer RDV</button>
-            </div>
-          </form>
+          <p>
+            Choisis d’abord un jour dans le calendrier, puis clique sur
+            <strong>Enregistrer RDV</strong> pour ajouter le contexte.
+          </p>
+          <div id="calendar"></div>
+          <div class="text-end mt-4">
+            <button
+              id="openModalBtn"
+              type="button"
+              class="btn btn-primary"
+            >
+              Enregistrer RDV
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Modal de création de RDV -->
+<div
+  class="modal fade"
+  id="appointmentModal"
+  tabindex="-1"
+  aria-labelledby="appointmentModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form
+        id="appointmentForm"
+        action="/scheduleAppointment/addscheduleAppointment"
+        method="post"
+      >
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentModalLabel">
+            Ajouter un rendez-vous
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Fermer"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="context" class="form-label">Contexte</label>
+            <textarea
+              class="form-control"
+              id="context"
+              name="context"
+              rows="2"
+              required
+              placeholder="Ex. Entretien projet React"
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="appointmentDateModal" class="form-label"
+              >Date du RDV</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="appointmentDateModal"
+              name="appointment_date"
+              readonly
+              required
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-success">
+            Confirmer RDV
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('./includes/footer.ejs') %>
+
 <!-- FullCalendar CSS & JS -->
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+<link
+  href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
+  rel="stylesheet"
+/>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <!-- Locale FR pour FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/fr.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Sélectionne ton conteneur
-    var calendarEl = document.getElementById('calendar');
+  document.addEventListener('DOMContentLoaded', function () {
+    let selectedDateStr = null;
+    const calendarEl = document.getElementById('calendar');
+    const appointmentDateInput = document.getElementById(
+      'appointmentDateModal'
+    );
+    const openModalBtn = document.getElementById('openModalBtn');
 
-    // Instancie le calendrier en français
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      locale: 'fr',            // <-- ici on passe le français
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      locale: 'fr',
       initialView: 'dayGridMonth',
       selectable: true,
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        right: 'dayGridMonth,timeGridWeek,timeGridDay',
       },
       buttonText: {
-        today:    "Aujourd'hui",
-        month:    'Mois',
-        week:     'Semaine',
-        day:      'Jour',
-        list:     'Liste'
+        today: "Aujourd'hui",
+        month: 'Mois',
+        week: 'Semaine',
+        day: 'Jour',
+        list: 'Liste',
       },
-      select: function(info) {
-        // Exemple : on récupère la date au format ISO
-        document.getElementById('appointmentDate').value = info.startStr + 'T09:00';
-      }
+      select: function (info) {
+        selectedDateStr = info.startStr;
+      },
     });
 
-    // Affiche le calendrier
     calendar.render();
+
+    openModalBtn.addEventListener('click', function () {
+      if (!selectedDateStr) {
+        return alert("Choisis d'abord un jour dans le calendrier 😉");
+      }
+      // Injecte la date dans la modal
+      appointmentDateInput.value = selectedDateStr;
+      // Ouvre la modal Bootstrap
+      const appointmentModal = new bootstrap.Modal(
+        document.getElementById('appointmentModal')
+      );
+      appointmentModal.show();
+    });
   });
 </script>
-<%- include('./includes/footer.ejs') %>

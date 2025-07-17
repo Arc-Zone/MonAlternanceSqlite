@@ -27,7 +27,7 @@ router.post('/deleteTodo/:id' , homeController.deleteTodo)
 router.post('/message' , homeController.message)
 router.post('/deleteMessage/:id' , homeController.deleteMessage )
 router.post('/deleteEntreprise/:id' , homeController.deleteEntreprise )
-
+router.post('/scheduleAppointment/addscheduleAppointment' , homeController.addscheduleAppointment)
 router.post('/updateStatus/waiting/:id' , homeController.waiting)
 router.post('/updateStatus/accepte/:id', homeController.accepted)
 router.post('/updateStatus/refuse/:id' , homeController.refused)

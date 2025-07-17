@@ -1,0 +1,2 @@
+ALTER TABLE appointments
+ADD COLUMN context TEXT NOT NULL DEFAULT '';

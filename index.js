@@ -1,14 +1,30 @@
-// main.js
+// index.js
+const path       = require('path');
+const http       = require('http');
 const { app: electronApp, BrowserWindow, shell } = require('electron');
-const initServer = require('./server'); // ton initServer exporté depuis server.js
 
-async function createWindow() {
-  // 1) Démarre Express + SQLite
-  const expressApp = await initServer();
-  console.log('✅ Serveur Express démarré');
+// Charge ton Express “server.js”
+const expressApp = require('./server');
 
-  // 2) Crée la fenêtre Electron
-  const mainWindow = new BrowserWindow({
+let mainWindow;
+
+// 1) Montage du serveur HTTP autour d’Express
+const apiServer = http.createServer(expressApp);
+
+// 2) Démarrage d’Express via le serveur HTTP
+async function startExpress() {
+  return new Promise((resolve, reject) => {
+    apiServer.listen(3000, (err) => {
+      if (err) return reject(err);
+      console.log('✅ Serveur Express démarré sur http://localhost:3000');
+      resolve();
+    });
+  });
+}
+
+// 3) Création de la fenêtre Electron
+function createWindow() {
+  mainWindow = new BrowserWindow({
     fullscreen: true,
     webPreferences: {
       nodeIntegration: true,
@@ -16,21 +32,32 @@ async function createWindow() {
     }
   });
 
-  // 3) Ouvre les liens externes dans le navigateur natif
+  // Ouvre les liens externes dans le navigateur par défaut
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('http://') || url.startsWith('https://')) {
+    if (/^https?:\/\//.test(url)) {
       shell.openExternal(url);
     }
     return { action: 'deny' };
   });
 
-  // 4) Charge l'URL de ton serveur
+  // Charge l’URL de ton API
   mainWindow.loadURL('http://localhost:3000');
 }
 
-// Quand Electron est prêt, on lance tout
-electronApp.whenReady().then(createWindow);
+// 4) Pipeline de démarrage
+electronApp.whenReady()
+  .then(startExpress)   // Démarre Express d’abord
+  .then(createWindow)   // Puis la fenêtre
+  .catch(err => {
+    console.error('❌ Erreur au démarrage :', err);
+    electronApp.quit();
+  });
 
+// 5) Fermeture propre
 electronApp.on('window-all-closed', () => {
   if (process.platform !== 'darwin') electronApp.quit();
+});
+
+electronApp.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });

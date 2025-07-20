@@ -12,15 +12,18 @@ module.exports = {
   // -------------------------------------------------------------------
   // PACKAGER CONFIGURATION (Electron Packager)
   // -------------------------------------------------------------------
-  packagerConfig: {
-    asar: true,             // Emballe tout dans un ASAR pour plus de performance
+// forge.config.js
+packagerConfig: {
+    asar: {
+      // Tout ce qui matche sous public/docs/cv sera dépaqueté
+      unpack: 'public/docs/cv/**/*'
+    },
     extraResource: [
-      'views',              // Inclut tes templates EJS
-      'public'              // Inclut ton dossier CSS/JS statique
+      'views',   // tes templates EJS
+      'public'   // ton CSS/JS, images, etc.
     ],
-    // icon: './assets/icon' // Décommente et ajuste si tu as une icône personnalisée
+    // icon: './assets/icon'
   },
-
   // -------------------------------------------------------------------
   // REBUILD CONFIGURATION
   // -------------------------------------------------------------------

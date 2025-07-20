@@ -2,43 +2,83 @@ const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
+  // -------------------------------------------------------------------
+  // CHEMIN D’ACCÈS PRINCIPAL
+  // -------------------------------------------------------------------
+  // Correspond à ton "main" dans package.json (index.js)
+  // Forge lira et packagera ce fichier comme point d’entrée Electron.
+  main: 'index.js',
+
+  // -------------------------------------------------------------------
+  // PACKAGER CONFIGURATION (Electron Packager)
+  // -------------------------------------------------------------------
   packagerConfig: {
-    asar: true,
+    asar: true,             // Emballe tout dans un ASAR pour plus de performance
+    extraResource: [
+      'views',              // Inclut tes templates EJS
+      'public'              // Inclut ton dossier CSS/JS statique
+    ],
+    // icon: './assets/icon' // Décommente et ajuste si tu as une icône personnalisée
   },
-  rebuildConfig: {},
+
+  // -------------------------------------------------------------------
+  // REBUILD CONFIGURATION
+  // -------------------------------------------------------------------
+  rebuildConfig: {
+    // Laisse vide, ou ajoute ici tes modules natifs à rebuild
+  },
+
+  // -------------------------------------------------------------------
+  // MAKERS — création des installeurs / archives
+  // -------------------------------------------------------------------
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        // Config spécifique à Windows Squirrel (optionnel)
+      }
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
+      // Génère un .zip pour macOS
+      platforms: ['darwin']
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        // Config Debian/Ubuntu
+      }
     },
     {
       name: '@electron-forge/maker-rpm',
-      config: {},
-    },
+      config: {
+        // Config RedHat/Fedora
+      }
+    }
   ],
+
+  // -------------------------------------------------------------------
+  // PLUGINS — fuses & unpack natives
+  // -------------------------------------------------------------------
   plugins: [
     {
       name: '@electron-forge/plugin-auto-unpack-natives',
-      config: {},
+      config: {
+        // Permet de gérer les dépendances natives hors de l’ASAR
+      }
     },
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
     new FusesPlugin({
       version: FuseVersion.V1,
+      // Désactive le mode Node intégré (on utilise Express via server.js)
       [FuseV1Options.RunAsNode]: false,
+      // Active la validation d’intégrité de l’ASAR
+      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+      // Forcer le chargement du code uniquement depuis l’ASAR
+      [FuseV1Options.OnlyLoadAppFromAsar]: true,
+      // Les autres options peuvent rester sur false
       [FuseV1Options.EnableCookieEncryption]: true,
       [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
-      [FuseV1Options.EnableNodeCliInspectArguments]: false,
-      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-      [FuseV1Options.OnlyLoadAppFromAsar]: true,
-    }),
-  ],
+      [FuseV1Options.EnableNodeCliInspectArguments]: false
+    })
+  ]
 };

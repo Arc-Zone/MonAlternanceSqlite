@@ -52,7 +52,7 @@
 1. **Clone le dépôt**
 
    ```bash
-   git clone git@github.com:Arc-Zone/MonAlternance.git
+   git clone git@github.com:Arc-Zone/MonAlternanceSqlite.git
    cd MonAlternance
    ```
 

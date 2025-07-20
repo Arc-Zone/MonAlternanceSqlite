@@ -2,6 +2,7 @@
 const path       = require('path');
 const http       = require('http');
 const { app: electronApp, BrowserWindow, shell } = require('electron');
+const { clipboard } = require('electron');
 
 // Charge ton Express “server.js”
 const expressApp = require('./server');

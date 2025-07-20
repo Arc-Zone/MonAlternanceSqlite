@@ -1,36 +1,23 @@
-const { clipboard } = require('electron');
-let menu = document.getElementById('menu')
-let divQuerry = menu.querySelectorAll("div")
+// public/scripts/copy.js
+window.addEventListener('DOMContentLoaded', () => {
+  const { clipboard } = require('electron');
 
-menu.addEventListener('click' , function(){
-    divQuerry.forEach(div => {
-        if(div.style.display === "block"){
-            div.style.display = "none"
-        }else{
-            div.style.display = "block"
-        }
-    });
-    divQuerry.forEach(div =>{
-        div.addEventListener('click' , function(event){
-            event.stopPropagation()
-        })
-    })
-})
-
-divQuerry.forEach(div => {
-    div.addEventListener('click', () => {
-        let link = div.querySelector('a');
-        if (link) {
-            window.location.href = link.href;
-        }
-    });
-});
-
-document.querySelectorAll('.copy-button').forEach(button => {
+  document.querySelectorAll('.copy-button').forEach(button => {
     button.addEventListener('click', () => {
-        const targetId = button.getAttribute('data-target');
-        const textElement = document.getElementById(targetId);
-        const text = textElement.innerText.trim();
+      const targetId = button.getAttribute('data-target');
+      const textEl = document.getElementById(targetId);
+      if (!textEl) {
+        console.error(`Target #${targetId} introuvable`);
+        return;
+      }
+      const text = textEl.innerText.trim();
+      try {
         clipboard.writeText(text);
+        button.textContent = '✔ Copié';
+        setTimeout(() => button.textContent = 'Copier', 1500);
+      } catch (err) {
+        console.error('Erreur copier‑coller:', err);
+      }
     });
+  });
 });

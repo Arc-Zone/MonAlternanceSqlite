@@ -10,13 +10,14 @@ const path = require('path');
     const refused = refusedRows[0].length;
       let validedRows = await db.query(`SELECT * FROM offre_emploie WHERE offre_emploie.valided = 1`)
     const valided = validedRows[0].length;
- let relancedRows = await db.query(`
-                                                                SELECT *
-                                                                FROM offre_emploie
-                                                                WHERE date(date_emploie) = date('now', '-7 days');
-                                                                `);
+    let relancedRows = await db.query(`
+                                                                    SELECT *
+                                                                    FROM offre_emploie
+                                                                    WHERE date(date_emploie) = date('now', '-7 days');
+                                                                    `);
+    let [appointmentGet , appointementfields] = await db.query(`SELECT * FROM appointments`)
 
-    res.render('home.ejs' , {lastCandidature:rows , waitingCount:waitingCount , refused:refused , valided:valided , relancedRows:relancedRows})
+    res.render('home.ejs' , {lastCandidature:rows , waitingCount:waitingCount , refused:refused , valided:valided , relancedRows:relancedRows , appointmentGet:appointmentGet})
 
 }
 

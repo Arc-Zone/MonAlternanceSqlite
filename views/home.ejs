@@ -64,39 +64,64 @@
       </div>
     </div>
 
-    <!-- Prochaine relance & Dernières candidatures -->
-    <div class="row g-4">
-      <div class="col-12 col-md-6">
-        <div class="card h-100">
-          <div class="card-header bg-light">
-            <i class="fas fa-bell me-2"></i>Prochaine relance
-          </div>
-          <div class="card-body">
-            <% if (relancedRows.length === 0) { %>
-              <p class="text-muted mb-0">Rien à relancer pour l’instant.</p>
-            <% } else { %>
-              <% relancedRows.forEach(relance => { %>
-                <p class="mb-1"><%= relance.name_emploie %></p>
-              <% }) %>
-            <% } %>
-          </div>
-        </div>
+    <!-- Prochaine RDV & Dernières candidatures -->
+    <!-- Prochaine RDV & Dernières candidatures -->
+<div class="row g-4">
+  <!-- Prochain Rendez-vous -->
+  <div class="col-12 col-md-6">
+    <div class="card h-100">
+      <div class="card-header bg-light">
+        <i class="fas fa-bell me-2"></i>Prochain Rendez‑vous
       </div>
-      <div class="col-12 col-md-6">
-        <div class="card h-100">
-          <div class="card-header bg-light">
-            <i class="fas fa-history me-2"></i>Dernières candidatures
-          </div>
-          <div class="card-body">
-            <% for (let i = lastCandidature.length - 1; i >= Math.max(0, lastCandidature.length - 3); i--) { %>
-              <p class="mb-1">
-                <a href="/post/<%= lastCandidature[i].id %>"><%= lastCandidature[i].name_emploie %></a>
-              </p>
-            <% } %>
-          </div>
-        </div>
+      <div class="card-body">
+        <% if (appointmentGet.length === 0) { %>
+          <p class="text-muted mb-0">Pas de rendez-vous pour l’instant.</p>
+        <% } else { %>
+          <% appointmentGet.forEach((appointment) => { %>
+            <div class="mb-3">
+              <small class="text-muted">
+                <%= new Date(appointment.appointment_date)
+                      .toLocaleString('fr-FR', {
+                        weekday: 'long',
+                        year:    'numeric',
+                        month:   'long',
+                        day:     'numeric',
+                     }) %>
+              </small>
+              <p class="mb-0"><%= appointment.context %></p>
+            </div>
+          <% }) %>
+        <% } %>
       </div>
     </div>
+  </div>
+
+  <!-- Dernières candidatures -->
+  <div class="col-12 col-md-6">
+    <div class="card h-100">
+      <div class="card-header bg-light">
+        <i class="fas fa-history me-2"></i>Dernières candidatures
+      </div>
+      <div class="card-body">
+        <% if (lastCandidature.length === 0) { %>
+          <p class="text-muted mb-0">Aucune candidature récente.</p>
+        <% } else { %>
+          <% 
+            // On affiche au plus 3 dernières
+            const start = Math.max(0, lastCandidature.length - 3);
+            for (let i = lastCandidature.length - 1; i >= start; i--) { 
+          %>
+            <p class="mb-1">
+              <a href="/post/<%= lastCandidature[i].id %>">
+                <%= lastCandidature[i].name_emploie %>
+              </a>
+            </p>
+          <% } %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
   <% } %>
 </div>
 
